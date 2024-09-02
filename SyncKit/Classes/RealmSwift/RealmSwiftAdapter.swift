@@ -917,9 +917,8 @@ public class RealmSwiftAdapter: NSObject, ModelAdapter {
                         let targetIdentifier = self.getStringIdentifier(for: target, usingPrimaryKey: primaryKey)
                         let referenceIdentifier = "\(property.objectClassName!).\(targetIdentifier)"
                         let recordID = CKRecord.ID(recordName: referenceIdentifier, zoneID: zoneID)
-                        // if we set the parent we must make the action .deleteSelf, otherwise we get errors if we ever try to delete the parent record
-                        let action: CKRecord.ReferenceAction = parentKey == property.name ? .deleteSelf : .none
-                        let recordReference = CKRecord.Reference(recordID: recordID, action: action)
+                        // Using .deleteSelf action for parent records causes problem when the parent record is referred by more than 750 child records.                         
+                        let recordReference = CKRecord.Reference(recordID: recordID, action: .none)
                         record[property.name] = recordReference;
                         if parentKey == property.name {
                             parent = target
